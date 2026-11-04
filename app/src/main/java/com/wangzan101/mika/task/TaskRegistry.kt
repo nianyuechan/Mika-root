@@ -53,6 +53,7 @@ class TaskCenter<R : Any>(
 
     @Synchronized fun runs(): List<R> = running + queued
     @Synchronized fun running(): List<R> = running.toList()
+    @Synchronized fun hasOtherRunning(run: R): Boolean = running.any { it !== run }
     @Synchronized fun queued(): List<R> = queued.toList()
     @Synchronized fun isQueued(run: R): Boolean = queued.any { it === run }
     @Synchronized fun byConversation(id: String): R? = runs().firstOrNull { conversationOf(it) == id }

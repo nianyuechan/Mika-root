@@ -144,6 +144,7 @@ class TaskService : Service() {
     /** 任务结束后留在后台的那一页(见 [com.wangzan101.mika.cap.web.PageKeeper]):留着时服务不退,前台通知换成它的。 */
     private val keeper get() = (application as com.wangzan101.mika.MikaApp).pageKeeper
 
+    internal fun otherRunIsActive(run: TaskRun) = center.hasOtherRunning(run)
     internal fun otherRunHasDisplay(run: TaskRun) = center.running().any { it !== run && it.displayId.value >= 0 }
     internal fun hasActiveRuns() = center.running().isNotEmpty()
     internal fun hasQueuedRuns() = center.queued().isNotEmpty()

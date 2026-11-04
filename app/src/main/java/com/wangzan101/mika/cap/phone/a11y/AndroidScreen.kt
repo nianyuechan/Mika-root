@@ -98,8 +98,8 @@ class AndroidScreen(
     private val clipHeld: (Boolean) -> Unit = {},
     /** 剪贴板是全局的:几个任务同时跑时粘贴兜底共用一把锁。 */
     private val clipLock: Lock = ReentrantLock(),
-    /** 并行任务时为 true:打开 App 前先查它是不是正在 Mika 的另一块屏上给别的任务用。 */
-    private val checkOtherTasks: Boolean = false,
+    /** 此刻还有其他运行中任务时,打开 App 前先查它是不是正在 Mika 的另一块屏上给别的任务用。 */
+    private val checkOtherTasks: () -> Boolean = { false },
     /** 并行任务时替本任务占下这个包;别的任务已占着(且还在用)时返回 false。 */
     private val reserve: (String) -> Boolean = { true },
     /** 同 [reserve],占的是装在另一份用户(用户编号)里的那份:和本来那份分开占,两个任务能各用一份。 */
@@ -666,10 +666,10 @@ class AndroidScreen(
 
     /**
      * 等别的任务放开 [packageName](模型打开它时要了等):放开指别的屏上已经没有它、占用登记里也没有别的任务占着。
-     * 只在并行任务时有意义,否则没有别的任务和它争。
+     * 只在还有其他运行中任务时有意义,否则没有别的任务和它争。
      */
     override suspend fun awaitAppFree(packageName: String, userId: Int?, timeoutMs: Long): AppWait {
-        if (!checkOtherTasks) return AppWait.Unsupported
+        if (!checkOtherTasks()) return AppWait.Unsupported
         val user = userId?.takeIf { it != myUser }
         return awaitApp(packageName, user, timeoutMs) {
             withContext(Dispatchers.IO) { !onOtherDisplay(packageName, user) && appFree(packageName, user) }
@@ -685,7 +685,7 @@ class AndroidScreen(
     /** [openApp] / [openAppCopy] 的共同部分;[user] 为空是本来那份。 */
     private suspend fun open(packageName: String, user: Int?, cold: Boolean): ActionResult = withContext(Dispatchers.IO) {
         // 同一个 App 不能同时在两块屏上:系统会把整个任务挪过来,等于从另一个任务手里抢走它。装了两份的,两份各算各的
-        if (checkOtherTasks) {
+        if (checkOtherTasks()) {
             if (onOtherDisplay(packageName, user)) return@withContext IN_USE_BY_OTHER
             if (!(if (user == null) reserve(packageName) else reserveCopy(packageName, user))) return@withContext IN_USE_BY_OTHER
         }
@@ -721,7 +721,7 @@ class AndroidScreen(
      * 认系统问打开哪一个。这个 App 不收文字分享为 cannot_share。只打开分享页,发不发由模型在那一页上点。
      */
     override suspend fun shareText(packageName: String, text: String): ActionResult = withContext(Dispatchers.IO) {
-        if (checkOtherTasks) {
+        if (checkOtherTasks()) {
             val other = runCatching { shell.displayOfPackage(packageName) }.getOrDefault(-1)
             if (other >= 0 && other != display.current?.displayId) return@withContext IN_USE_BY_OTHER
             if (!reserve(packageName)) return@withContext IN_USE_BY_OTHER
@@ -880,7 +880,7 @@ class AndroidScreen(
         val pinned = packageName ?: allowedLinkHandler(action, uri)
         val id = display.get().displayId
         val expected = pinned ?: settingsPackage.takeIf { action != null }
-        if (checkOtherTasks && expected != null && !reserve(expected)) return@withContext IN_USE_BY_OTHER
+        if (checkOtherTasks() && expected != null && !reserve(expected)) return@withContext IN_USE_BY_OTHER
         val before = ScreenReader.topPackage(windows())
         val beforeTree = treeHash()
         // 事先知道由谁打开的(指定了 App、设置页、只有一个 App 接的链接):启动前先静上
@@ -908,7 +908,7 @@ class AndroidScreen(
         val opened = top?.takeIf { if (expected != null) it == expected else it !in systemPickers }
         if (opened != null) {
             // 事先不知道由谁打开的链接,落地后再占;占不到也不撤回(外壳那边已查过别的屏)
-            if (checkOtherTasks) reserve(opened)
+            if (checkOtherTasks()) reserve(opened)
             targetPackage = opened
             requestedUser = null
             val task = shell.topTaskId(displayId)
@@ -986,7 +986,7 @@ class AndroidScreen(
             ?: return@withContext SystemActionResult(ActionResult.Failed(SystemActionResult.NOT_SUPPORTED))
         val pkg = handler.packageName
         intent.component = android.content.ComponentName(pkg, handler.className)
-        if (checkOtherTasks && !action.silent && !reserve(pkg)) return@withContext SystemActionResult(IN_USE_BY_OTHER, pkg)
+        if (checkOtherTasks() && !action.silent && !reserve(pkg)) return@withContext SystemActionResult(IN_USE_BY_OTHER, pkg)
         val alarms = a11y.getSystemService(AlarmManager::class.java)
         val alarmBefore = runCatching { alarms?.nextAlarmClock?.triggerTime }
         val id = display.get().displayId
@@ -1347,7 +1347,7 @@ class AndroidScreen(
         }
         adopted += a.taskId
         // 事先不知道会开出哪个 App:挪回来后再占;占不到也不撤回
-        if (checkOtherTasks) reserve(pkg)
+        if (checkOtherTasks()) reserve(pkg)
         val deadline = SystemClock.uptimeMillis() + LAUNCH_WAIT_MS
         while (runCatching { shell.topTaskId(displayId) }.getOrDefault(-1) != a.taskId && SystemClock.uptimeMillis() < deadline) delay(POLL_MS)
         waitStable(SETTLE_CAP_MS)

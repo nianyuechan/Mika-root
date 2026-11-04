@@ -26,6 +26,42 @@ class TaskRegistryTest {
         assertEquals(Run("b", "新建闹钟"), registry.byConversation("b"))
     }
 
+    @Test fun threeConversationsStartWhenLimitThree() {
+        limit = ParallelLimit(3, null)
+        val started = listOf(
+            registry.tryStart("a", "一"),
+            registry.tryStart("b", "二"),
+            registry.tryStart("c", "三"),
+        )
+        assertTrue(started.all { it is StartResult.Started })
+        assertEquals(listOf("a", "b", "c"), registry.running().map { it.conversationId })
+        assertTrue(registry.tryStart("d", "四") is StartResult.Queued)
+    }
+
+    @Test fun raisingLimitPromotesAllEligibleQueuedConversations() {
+        limit = ParallelLimit(1, null)
+        val a = (registry.tryStart("a", "一") as StartResult.Started).run
+        val b = (registry.tryStart("b", "二") as StartResult.Queued).run
+        val c = (registry.tryStart("c", "三") as StartResult.Queued).run
+
+        limit = ParallelLimit(3, null)
+        assertEquals(listOf(b, c), registry.onEnded(a))
+        assertEquals(listOf("b", "c"), registry.running().map { it.conversationId })
+        assertEquals(emptyList<Run>(), registry.queued())
+    }
+
+    @Test fun otherRunningCheckFollowsCurrentRunsRatherThanCreationTime() {
+        val first = (registry.tryStart("a", "一") as StartResult.Started).run
+        assertFalse(registry.hasOtherRunning(first))
+
+        val second = (registry.tryStart("b", "二") as StartResult.Started).run
+        assertTrue(registry.hasOtherRunning(first))
+        assertTrue(registry.hasOtherRunning(second))
+
+        registry.onEnded(second)
+        assertFalse(registry.hasOtherRunning(first))
+    }
+
     @Test fun sameConversationQueues() {
         registry.tryStart("a", "一")
         // 同一对话里已有任务:照 M1 规则交给对话自己排队,登记处不收

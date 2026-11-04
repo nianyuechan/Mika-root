@@ -142,7 +142,7 @@ import com.wangzan101.mika.core.cap.web.WEB
  * 本任务自己的流只在它是「显示中」的任务([service.taskState.shownRun])时同步写到服务对外的流;
  * 别的任务(并行时)、或被新任务换下去的旧任务的写入只落在自己这份,不会盖掉显示中的那个。
  * [scope] 是服务的作用域:旁路协程挂在它下面,不随任务协程一起取消,由 [execute] 收尾时取消。
- * [slot] 决定它的通知编号与按钮请求码;[parallel] 为 true 时(开关 parallelTasks)打开 App 前查别的任务是否在用。
+ * [slot] 决定它的通知编号与按钮请求码;[parallel] 决定第二虚拟屏失败时的降级、接管通知刷新与结果通知编号。
  */
 class TaskRun(
     val conversationId: String,
@@ -574,7 +574,7 @@ class TaskRun(
                 }
                 val screen = AndroidScreen(
                     a11y, shell, agentDisplay, { recovery.markClipHeld(it) },
-                    clipLock = service.clipLock, checkOtherTasks = parallel,
+                    clipLock = service.clipLock, checkOtherTasks = { service.otherRunIsActive(this@TaskRun) },
                     reserve = { pkg -> service.reservePackage(pkg, key, stillUsed(pkg, null)) },
                     reserveCopy = { pkg, user -> service.reservePackage(claimKey(pkg, user), key, stillUsed(pkg, user)) },
                     appFree = { pkg, user -> service.packageFree(claimKey(pkg, user), key, stillUsed(pkg, user)) },
