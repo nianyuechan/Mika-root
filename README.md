@@ -17,6 +17,8 @@ It works on a hidden background screen, so you can keep using your phone.
 
 English · [简体中文](docs/readme/README.zh-CN.md) · [繁體中文](docs/readme/README.zh-Hant.md) · [日本語](docs/readme/README.ja.md) · [한국어](docs/readme/README.ko.md) · [Español](docs/readme/README.es.md)
 
+> **Personal branch build:** This independently maintained fork adds root-based phone helper startup (off by default, with wireless debugging fallback), multi-task scheduling fixes, and completed multilingual resources. Upstream: [wangzan101/Mika](https://github.com/wangzan101/Mika). Licensing and attribution remain unchanged.
+
 <br/>
 
 <img src="docs/media/wechat-send-side.gif" alt="From one sentence, Mika opens WeChat on its background screen, finds the contact and sends the message" width="640" />
