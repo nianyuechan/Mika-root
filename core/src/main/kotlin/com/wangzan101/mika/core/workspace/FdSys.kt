@@ -61,7 +61,7 @@ interface FdSys {
  */
 object NioFdSys : FdSys {
     private class Fd(val path: Path, private val ch: FileChannel?) : OpenFd {
-        private val real = path.toRealPath().toString()
+        private val real = path.toRealPath().toString().replace(File.separatorChar, '/')
         override fun realPath() = real
         override fun stat(): FdStat = statOf(path) ?: throw FdSysException(FdSysException.Kind.NOT_FOUND)
         override fun channel(): FileChannel = ch ?: throw FdSysException(FdSysException.Kind.NOT_FILE)

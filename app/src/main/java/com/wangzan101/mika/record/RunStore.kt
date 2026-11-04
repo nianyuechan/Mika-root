@@ -21,6 +21,8 @@ import java.io.Closeable
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -130,7 +132,7 @@ class RunStore internal constructor(
             val summary = RunEvent.json.decodeFromString(RunSummary.serializer(), summaryFile.readText()).with(e)
             val tmp = File(dir, "$RUN_JSON.tmp")
             tmp.writeText(RunEvent.json.encodeToString(RunSummary.serializer(), summary))
-            if (!tmp.renameTo(summaryFile)) error("rename failed")
+            Files.move(tmp.toPath(), summaryFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
             if (e is RunEvent.OutcomeJudged) metrics.update(runId) { it.copy(judged = e.outcome) }
         }.onFailure { runCatching { Log.w(TAG, "could not append to run $runId", it) } }
     }
@@ -284,7 +286,7 @@ class RunHandle internal constructor(
         safely("summary") {
             val tmp = File(dir, "${RunStore.RUN_JSON}.tmp")
             tmp.writeText(RunEvent.json.encodeToString(RunSummary.serializer(), summary))
-            if (!tmp.renameTo(File(dir, RunStore.RUN_JSON))) error("rename failed")
+            Files.move(tmp.toPath(), File(dir, RunStore.RUN_JSON).toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
         }
     }
 
