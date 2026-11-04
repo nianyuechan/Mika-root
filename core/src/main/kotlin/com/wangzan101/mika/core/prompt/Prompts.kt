@@ -11,10 +11,10 @@ import java.util.concurrent.ConcurrentHashMap
 object Prompts {
     private val cache = ConcurrentHashMap<String, String>()
 
-    /** 资源原文(去掉首尾空白)。 */
+    /** 资源原文(统一 LF,去掉首尾空白)。 */
     fun read(path: String): String = cache.getOrPut(path) {
         checkNotNull(Prompts::class.java.getResourceAsStream("/prompts/$path")) { "missing prompts/$path" }
-            .bufferedReader(Charsets.UTF_8).use { it.readText() }.trim()
+            .bufferedReader(Charsets.UTF_8).use { it.readText() }.replace("\r\n", "\n").trim()
     }
 
     fun system(name: String): String = read("system/$name.md")

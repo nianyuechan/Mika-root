@@ -13,7 +13,8 @@ import com.wangzan101.mika.core.assembly.allTools
 class PromptLayoutTest {
     private val root = File("src/main/resources/prompts")
     private fun files(layer: String) = File(root, layer).listFiles().orEmpty().filter { it.isFile }.map { it.name }.toSet()
-    private fun size(layer: String) = File(root, layer).listFiles().orEmpty().filter { it.isFile }.sumOf { it.readBytes().size }
+    private fun size(layer: String) = File(root, layer).listFiles().orEmpty().filter { it.isFile }
+        .sumOf { it.readText().replace("\r\n", "\n").toByteArray(Charsets.UTF_8).size }
 
     private val toolNames = allTools().map { it.name } + BatchRunner.spec(BATCHABLE).name
     /** 也是普通英文词的工具名:system/ 里照常当词用,不算点名。 */
@@ -41,7 +42,7 @@ class PromptLayoutTest {
         for ((tool, file) in used) {
             assertTrue("$tool: missing prompts/tools/$file.md", File(root, "tools/$file.md").isFile)
             // 说明确实出自这份文件:模板里的占位符换成「任意文字」后能对上
-            val template = File(root, "tools/$file.md").readText().trim()
+            val template = File(root, "tools/$file.md").readText().replace("\r\n", "\n").trim()
             val pattern = template.split(Regex("\\{\\{[a-z0-9_]+}}")).joinToString(".+") { Regex.escape(it) }
             assertTrue("$tool does not load prompts/tools/$file.md", Regex(pattern).matches(defs.getValue(tool)))
         }

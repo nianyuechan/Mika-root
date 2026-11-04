@@ -95,14 +95,16 @@ object ReadmeSections {
         else mapOf(KNOWLEDGE to knowledge(index.entries), PROVIDERS to providers(presets))
     }
 
-    /** 把 [readme] 里每段标记之间换成 [sections] 的内容;标记缺了或顺序不对直接失败。 */
-    fun render(readme: String, sections: Map<String, String>): String =
-        sections.entries.fold(readme) { text, (name, body) ->
+    /** 把 [readme] 里每段标记之间换成 [sections] 的内容;保留原文换行,标记缺了或顺序不对直接失败。 */
+    fun render(readme: String, sections: Map<String, String>): String {
+        val newline = if ("\r\n" in readme) "\r\n" else "\n"
+        return sections.entries.fold(readme) { text, (name, body) ->
             val s = text.indexOf(start(name))
             val e = text.indexOf(end(name))
             check(s >= 0 && e > s) { "README 里缺少 ${start(name)} … ${end(name)}" }
-            text.substring(0, s + start(name).length) + "\n" + body + "\n" + text.substring(e)
+            text.substring(0, s + start(name).length) + newline + body.replace("\n", newline) + newline + text.substring(e)
         }
+    }
 
     /** `updateReadme` 的入口:`<仓库根目录>`。 */
     @JvmStatic

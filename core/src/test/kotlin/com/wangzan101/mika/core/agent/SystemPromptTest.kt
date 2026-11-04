@@ -221,7 +221,7 @@ class SystemPromptAssemblyTest {
             val actual = promptOf(d, flags) + "\n"
             val file = File(dir, "$name.txt")
             if (update) { dir.mkdirs(); file.writeText(actual); continue }
-            val expected = javaClass.getResourceAsStream("/prompts/golden/$name.txt")?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
+            val expected = javaClass.getResourceAsStream("/prompts/golden/$name.txt")?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }?.replace("\r\n", "\n")
             if (expected != actual) drift += name
         }
         assertTrue("system prompt drifted for $drift; rerun with UPDATE_GOLDEN=1 if intended", drift.isEmpty())

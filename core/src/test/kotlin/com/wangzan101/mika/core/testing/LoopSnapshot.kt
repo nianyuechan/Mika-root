@@ -29,7 +29,7 @@ object LoopSnapshot {
             return
         }
         if (!file.exists()) fail("没有金样 ${file.path};用 ./gradlew :core:test --tests '*LoopScenarioTest' -PupdateSnapshots 生成")
-        assertEquals("快照 $name 变了;确认是有意的改动后用 -PupdateSnapshots 重新生成", file.readText(), actual)
+        assertEquals("快照 $name 变了;确认是有意的改动后用 -PupdateSnapshots 重新生成", file.readText().replace("\r\n", "\n"), actual)
     }
 
     /** 一个场景的快照:结局,然后各个模型(主模型、辅助角色)收到的请求。 */

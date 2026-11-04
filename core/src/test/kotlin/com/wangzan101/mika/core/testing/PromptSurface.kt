@@ -23,7 +23,7 @@ object PromptSurface {
             return
         }
         if (!file.exists()) fail("没有金样 ${file.path};用 ./gradlew :core:test --tests '*PromptSurface*' -PupdateSnapshots 生成")
-        assertEquals("提示词表面 $name 变了;确认是有意的改动后用 -PupdateSnapshots 重新生成", file.readText(), actual)
+        assertEquals("提示词表面 $name 变了;确认是有意的改动后用 -PupdateSnapshots 重新生成", file.readText().replace("\r\n", "\n"), actual)
     }
 
     /** 一种能力组合:系统提示词全文,再列发给模型的工具(名字 + 定义摘要,定义全文在 tools 里)。 */
@@ -60,7 +60,7 @@ object PromptSurface {
 
     private fun role(name: String): String =
         checkNotNull(PromptSurface::class.java.getResourceAsStream("/prompts/roles/$name.md")) { "missing role prompt $name" }
-            .bufferedReader(Charsets.UTF_8).use { it.readText() }
+            .bufferedReader(Charsets.UTF_8).use { it.readText() }.replace("\r\n", "\n")
 
     /** 一组「标签 → 发给模型的字」逐条写出。 */
     fun entries(items: List<Pair<String, String>>): String = buildString {
