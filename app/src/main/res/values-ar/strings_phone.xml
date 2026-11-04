@@ -136,4 +136,25 @@
     <string name="phone_usb_again_body">صِل الهاتف بكمبيوتر باستخدام كابل USB ونفّذ هذا الأمر على الكمبيوتر (ويعمل أيضًا أي أسلوب آخر لتنفيذ أمر adb هذا للهاتف). يلزم تنفيذه مجددًا بعد كل إعادة تشغيل للهاتف.</string>
     <string name="phone_success_note_usb">أبقِ USB debugging مفعّلًا. شُغّلت أداة المساعدة باستخدام أمر USB ولن تعمل بعد إعادة تشغيل الهاتف: افتح Mika ونفّذ الأمر مجددًا.</string>
     <string name="phone_usage_note_usb">شُغّلت أداة المساعدة المدمجة في Mika باستخدام أمر بدء USB وتواصل العمل بعد فصل الكابل. أبقِ «USB debugging» (في Developer options) مفعّلًا؛ إذ يؤدي إيقافه إلى تعطيل التحكم بالهاتف. بعد إعادة تشغيل الهاتف، لن تعمل الأداة تلقائيًا: افتح Mika ونفّذ الأمر مجددًا (يمكنك نسخه في «Set up phone control»). إذا كان خيار «Wireless debugging» يعمل على هذا الهاتف، فسيتيح الاقتران مرة واحدة لـ Mika إعادة الاتصال تلقائيًا بعد إعادة التشغيل.</string>
+    <string name="fail_root_denied">تم رفض إذن الروت</string>
+    <string name="fail_root_denied_body">تعذّر على Mika بدء أداة مساعدة الهاتف باستخدام الروت. انقر على «إعادة المحاولة» واسمح لـ Mika في مدير الروت، أو أوقف «استخدام الروت لبدء أداة مساعدة الهاتف».</string>
+    <string name="fail_root_no_answer">لم يستجب الروت</string>
+    <string name="fail_root_no_answer_body">لم يستجب أحد لطلب إذن الروت. انقر على «إعادة المحاولة» واسمح لـ Mika عند ظهور الطلب.</string>
+    <string name="fail_root_gone">لم يعد الروت متاحًا</string>
+    <string name="fail_root_gone_body">لم يعد بإمكان Mika العثور على su على هذا الهاتف. أوقف «استخدام الروت لبدء أداة مساعدة الهاتف»، أو أجرِ اقتران Wireless debugging بدلًا من ذلك.</string>
+    <string name="fail_root_no_shell">لا يستطيع هذا الروت بدء أداة مساعدة الهاتف</string>
+    <string name="fail_root_no_shell_body">سمح su لـ Mika، لكنه تعذّر عليه التبديل إلى المستخدم المقيّد الذي تعمل الأداة بصلاحياته. أجرِ اقتران Wireless debugging أو ابدأها من كمبيوتر بدلًا من ذلك.</string>
+    <string name="phone_root_line_starting">أداة مساعدة الهاتف لا تعمل؛ جارٍ تشغيلها باستخدام الروت…</string>
+    <string name="phone_root_group">الروت</string>
+    <string name="phone_root_start">استخدام الروت لبدء أداة مساعدة الهاتف</string>
+    <string name="phone_root_start_sub">لا حاجة إلى الاقتران أو كمبيوتر. بعد إعادة تشغيل الهاتف، يعيد Mika تشغيلها تلقائيًا.</string>
+    <string name="phone_root_pending">جارٍ انتظار إذن الروت… اسمح لـ Mika في الطلب الظاهر.</string>
+    <string name="phone_root_denied_sub">تم رفض إذن الروت. انقر لطلبه مجددًا.</string>
+    <string name="phone_root_no_answer_sub">لم يستجب الروت. انقر لطلب الإذن مجددًا.</string>
+    <string name="phone_root_no_shell_sub">لا يستطيع هذا الروت التبديل إلى المستخدم المقيّد الذي تعمل أداة المساعدة بصلاحياته.</string>
+    <string name="phone_root_note">يظهر هذا الخيار لأن Mika عثر على su على هذا الهاتف. تظل أداة المساعدة التي تُبدأ باستخدام الروت تعمل بالمستخدم المقيّد نفسه، وبالأذونات نفسها التي تحصل عليها عند بدئها عبر Wireless debugging.</string>
+    <string name="phone_root_option">هذا الهاتف مروّت: ابدأ باستخدام الروت</string>
+    <string name="phone_root_option_body">يطلب Mika الإذن من su مرة واحدة، ثم يبدأ أداة المساعدة. بعد إعادة تشغيل الهاتف، يعيد بدءها تلقائيًا دون اقتران.</string>
+    <string name="phone_success_note_root">بُدئت أداة المساعدة باستخدام الروت. بعد إعادة تشغيل الهاتف، يعيد Mika بدءها تلقائيًا.</string>
+    <string name="phone_usage_note_root">بُدئت أداة المساعدة المدمجة في Mika باستخدام الروت وتظل تعمل في الخلفية، سواء مع Wi-Fi أو دونه. بعد إعادة تشغيل الهاتف، يعيد Mika بدءها باستخدام الروت تلقائيًا، دون اقتران أو كمبيوتر. إذا رُفض إذن الروت أو أُزيل الروت، فستوضح مجموعة «الروت» أدناه ذلك.</string>
 </resources>

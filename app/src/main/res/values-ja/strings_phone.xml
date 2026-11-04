@@ -136,4 +136,25 @@
     <string name="phone_usb_again_body">スマホを USB ケーブルでパソコンにつないで、パソコンでこのコマンドを実行します(この adb コマンドをスマホに対して実行できる方法なら、ほかの方法でもかまいません)。スマホを再起動するたびに必要です。</string>
     <string name="phone_success_note_usb">USB デバッグはオンのままにしてください。ヘルパーは USB コマンドで起動したため、スマホの再起動後は自動で復帰しません。Mika を開いて、もう一度コマンドを実行してください。</string>
     <string name="phone_usage_note_usb">Mika 内蔵のヘルパーは USB の開始コマンドで起動したもので、ケーブルを抜いても動き続けます。「USB デバッグ」(開発者向けオプション内)はオンのままにしてください。オフにすると、スマホの操作が止まります。スマホの再起動後、ヘルパーは自動では復帰しません。Mika を開いて、もう一度コマンドを実行してください(「スマホの操作を設定」でコピーできます)。このスマホで「ワイヤレス デバッグ」が使えるなら、一度ペア設定すると、再起動後も Mika が自動で再接続できます。</string>
+    <string name="fail_root_denied">root 権限が拒否されました</string>
+    <string name="fail_root_denied_body">Mika は root でスマホのヘルパーを起動できませんでした。「再試行」をタップし、root 管理アプリで Mika を許可するか、「root でスマホのヘルパーを起動」をオフにしてください。</string>
+    <string name="fail_root_no_answer">root から応答がありません</string>
+    <string name="fail_root_no_answer_body">root 権限のダイアログで応答がありませんでした。「再試行」をタップし、ダイアログが表示されたら Mika を許可してください。</string>
+    <string name="fail_root_gone">root を利用できなくなりました</string>
+    <string name="fail_root_gone_body">このスマホで su が見つからなくなりました。「root でスマホのヘルパーを起動」をオフにするか、代わりにワイヤレス デバッグをペア設定してください。</string>
+    <string name="fail_root_no_shell">この root ではスマホのヘルパーを起動できません</string>
+    <string name="fail_root_no_shell_body">su は Mika を許可しましたが、ヘルパーが動作する制限付きユーザーに切り替えられませんでした。代わりにワイヤレス デバッグをペア設定するか、パソコンから起動してください。</string>
+    <string name="phone_root_line_starting">スマホのヘルパーは動作していません。root で起動しています…</string>
+    <string name="phone_root_group">Root</string>
+    <string name="phone_root_start">root でスマホのヘルパーを起動</string>
+    <string name="phone_root_start_sub">ペア設定もパソコンも不要です。スマホの再起動後も、Mika が自動で起動します。</string>
+    <string name="phone_root_pending">root 権限を待っています… ダイアログで Mika を許可してください。</string>
+    <string name="phone_root_denied_sub">root 権限が拒否されました。タップしてもう一度確認します。</string>
+    <string name="phone_root_no_answer_sub">root から応答がありませんでした。タップしてもう一度確認します。</string>
+    <string name="phone_root_no_shell_sub">この root では、ヘルパーが動作する制限付きユーザーに切り替えられません。</string>
+    <string name="phone_root_note">このスマホで su が見つかったため、この項目を表示しています。root で起動したヘルパーも同じ制限付きユーザーとして動作し、権限はワイヤレス デバッグで起動した場合と同じです。</string>
+    <string name="phone_root_option">このスマホは root 化済み：root で起動</string>
+    <string name="phone_root_option_body">Mika が su に一度だけ権限を求め、ヘルパーを起動します。スマホの再起動後も、ペア設定なしで自動で起動します。</string>
+    <string name="phone_success_note_root">ヘルパーは root で起動しました。スマホの再起動後も、Mika が自動で起動します。</string>
+    <string name="phone_usage_note_root">Mika 内蔵のヘルパーは root で起動し、Wi-Fi の有無にかかわらずバックグラウンドで動き続けます。スマホの再起動後も、ペア設定やパソコンなしで、Mika が root を使って自動で起動します。root 権限が拒否されたり root が削除されたりした場合は、下の Root グループに表示されます。</string>
 </resources>
